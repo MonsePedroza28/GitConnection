@@ -8,3 +8,4 @@
 					objTransaction.Request__c = getStringEncrypted(objData.objBody.toString());
 					objTransaction.BodyBlob__c = true;
 				}
+'Hola como estas?' 
