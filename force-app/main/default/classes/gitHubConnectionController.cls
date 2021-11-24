@@ -1,0 +1,174 @@
+/**
+ * @author Arcode.
+ * @description This class manages connections with GitHub.
+ * <p /><p /> 
+ */
+global with sharing class gitHubConnectionController {
+    
+    public static String strClientId;
+    public static String strAuthorizationUrl;
+    public static String strScope;
+    public static String strState;
+    public static String strRedirectUri;
+    public static String strCode;
+    public static String strUrl;
+    public static String strToken;
+    
+    /**
+     * This method generates the authentication url.
+     * @return get url for user authorization.
+     */
+    @AuraEnabled(cacheable = false)
+    public static String getAuthentication() {
+		String strEnvironmentId = UserInfo.getOrganizationId();
+		String strEnvironmentId15Digits = strEnvironmentId.substring(0, 15);
+        integrationApp__mdt objIntegrateApp = [SELECT ClientId__c, Scope__c, RedirectURI__c, State__c, AuthorizationURL__c FROM integrationApp__mdt];
+        strRedirectUri = objIntegrateApp.RedirectURI__c;
+        strState = objIntegrateApp.State__c;
+        strAuthorizationUrl = objIntegrateApp.AuthorizationURL__c;
+        strScope = objIntegrateApp.Scope__c;
+        strClientId = objIntegrateApp.ClientId__c;
+        strUrl = strAuthorizationUrl + '?scope=' + strScope + '&client_id=' + strClientId + '&redirect_uri=' + strRedirectUri + '&state=' + strState;
+        return strUrl;
+    }
+
+    /**
+     * This method generates and saves a token.
+     */
+    @AuraEnabled(cacheable = true)
+    public static void getToken() {
+        Boolean boolResult;
+        String strResults;
+        String strAccesToken = 'access_token=[a-zA-Z0-9_]{40}';
+        strCode = ApexPages.currentPage().getParameters().get('code');
+        Matcher objMatcher;
+        //We prepare the Access Token.
+        strResults = getHttpResponse(getHttpRequest('Token', 'POST', 'Content-Type', 'application/x-www-form-urlencoded', '', '', 'https://github.com/login/oauth/access_token', '',
+         'ef4d84387f76e7af6d66', '064f883ee558e11b5c84ded4ec546fd0ceabcee1', strCode, 'https://arcode--monsedev--c.visualforce.com/apex/succesLoginPageGitHub', 'state'));
+
+        //We obtain only alphanumeric part from Access Token.
+        objMatcher = Pattern.compile(strAccesToken).matcher(strResults);
+        boolResult = objMatcher.find();
+
+        //If the Token exists, we save token.
+        if(boolResult) {
+            strResults = objMatcher.group(0).substring(13, 53);
+    
+            //We save Token in Token__c field.
+            User objUser = [SELECT Id, Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+            objUser.Token__c = strResults;
+            update objUser;
+        }
+    }
+
+    /**
+     * This method connects with GitHub and obtains repositories.
+     * @return get the list of repositories.
+     */
+    @AuraEnabled(cacheable = false)
+    public static List<Object> getRepositories() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+
+        //We prepare user's repositories.
+        strResults = getHttpResponse(getHttpRequest('Repository', 'GET', 'Authorization', '', '', 'MonsePedroza28', 'https://api.github.com/users/', '/repos', '', '', '', '', ''));
+
+        //We obtain user's repositories.
+        List<Object> lstRepositories = (List<Object>)JSON.deserializeUntyped(strResults);
+        return lstRepositories;
+    }   
+
+    /**
+     * This method obtains the branches from the GitHub user.
+     * @return get the list of branches.
+     */
+    @AuraEnabled(cacheable = false)
+    public static List<Object> getBranches() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+       
+        //We prepare user's branches.
+        strResults = getHttpResponse(getHttpRequest('Branch', 'GET', 'Authorization', '', '/GitConnection', 'MonsePedroza28', 'https://api.github.com/repos/', '/branches', '', '', '', '', ''));
+
+        List<Object> lstBranches = (List<Object>)JSON.deserializeUntyped(strResults);
+        System.debug(LoggingLevel.INFO, lstBranches);
+        return lstBranches;
+    }
+
+    /**
+     * This method obtains the token Id.
+     * @return get user's token.
+     */
+    @AuraEnabled(cacheable = false)
+    public static String getTokenId() {
+        User objUser = [SELECT Id, Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        strToken = objUser.Token__c;
+        return strToken;
+    }
+
+    /**
+     * This method prepares HttpsRequest for differents Version Controllers.
+     * @param strType Type of Version Controller.
+     * @param strMethod Method to execute.
+     * @param strAuthorization Authorization of htppRequest.
+     * @param strApplication 
+     * @param strRepositoryName Name of repository.
+     * @param strUserName User's name.
+     * @param strRequest API link.
+     * @param strVersionController Type of Version Controller.
+     * @param strClientId User's Id
+     * @param strClientSecret Id Client Secret
+     * @param strCode Code generate for GitHub
+     * @param strRedirectUri Redirect link.
+     * @param strState Security word.
+     */
+    public static HttpRequest getHttpRequest(String strType, String strMethod, String strAuthorization, String strApplication, String strRepositoryName, String strUserName, 
+    String strRequest, String strVersionController, String strClientId, String strClientSecret, String strCode, String strRedirectUri, String strState){
+
+        //We get Access Token of user.
+        User objUser = [SELECT Id, Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        HttpRequest objRequest = new HttpRequest();
+        if(strType != null && strType != 'undefined' && strType != ''){
+            switch on strType{
+
+                //We prepared access token from user.
+                when 'Token' {
+                    objRequest.setBody('client_id=' + strClientId + '&client_secret=' + strClientSecret + '&code=' + strCode + '&redirect_uri=' + strRedirectUri + '&state=' + strState);
+                    objRequest.setCompressed(false);
+                    objRequest.setHeader(strAuthorization, strApplication);
+                    objRequest.setEndpoint(strRequest);
+                    objRequest.setMethod(strMethod);
+                }
+
+                //We prepared user's branch.
+                when 'Branch' {
+                    objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
+                    objRequest.setHeader(strAuthorization, objUser.Token__c);
+                    objRequest.setmethod(strMethod);
+                }
+
+                //We prepared user's repositories.
+                when 'Repository' {
+                    objRequest.setEndpoint(strRequest + strUserName + strVersionController);
+                    objRequest.setHeader(strAuthorization, objUser.Token__c);
+                    objRequest.setmethod(strMethod);
+                }
+            }
+        }
+        return objRequest;
+    }
+
+   /**
+     * This method obtain the HttpResponse.
+     * @return get HttpResponse's body.
+     */
+    public static String getHttpResponse(HttpRequest objRequest){
+        String strResults;
+        HTTP objHttp = new HTTP();
+        HTTPResponse objResponse = objHttp.send(objRequest);
+        strResults = objResponse.getBody();
+        return strResults;
+    }
+
+
+}

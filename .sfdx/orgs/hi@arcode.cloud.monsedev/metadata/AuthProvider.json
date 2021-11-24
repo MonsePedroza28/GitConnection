@@ -1,0 +1,15 @@
+{
+  "status": 0,
+  "result": {
+    "createdById": "0055e000005yQAGAA2",
+    "createdByName": "Hi Arcode",
+    "createdDate": "2021-10-29T21:56:20.000Z",
+    "fileName": "authproviders/GitHubTest.authprovider",
+    "fullName": "GitHubTest",
+    "id": "0SO8G000000CaViWAK",
+    "lastModifiedById": "0055e000005yQAGAA2",
+    "lastModifiedByName": "Hi Arcode",
+    "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+    "type": "AuthProvider"
+  }
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>authenticationUrl</label>
+    <protected>false</protected>
+    <values>
+        <field>AuthorizationURL__c</field>
+        <value xsi:type="xsd:string">https://github.com/login/oauth/authorize</value>
+    </values>
+    <values>
+        <field>Authorization__c</field>
+        <value xsi:type="xsd:string">Content-Type</value>
+    </values>
+    <values>
+        <field>BodyType__c</field>
+        <value xsi:type="xsd:string">application/x-www-form-urlencoded</value>
+    </values>
+    <values>
+        <field>ClientId__c</field>
+        <value xsi:type="xsd:string">ef4d84387f76e7af6d66</value>
+    </values>
+    <values>
+        <field>ClientSecret__c</field>
+        <value xsi:type="xsd:string">064f883ee558e11b5c84ded4ec546fd0ceabcee1</value>
+    </values>
+
+    <values>
+        <field>Endpoint__c</field>
+        <value xsi:type="xsd:string">https://github.com/login/oauth/access_token</value>
+    </values>
+    <values>
+        <field>RedirectURI__c</field>
+        <value xsi:type="xsd:string">https://arcode--monsedev--c.visualforce.com/apex/succesLoginPageGitHub</value>
+    </values>
+    <values>
+        <field>RepositoryName__c</field>
+        <value xsi:type="xsd:string">/GitConnection</value>
+    </values>
+    <values>
+        <field>Scope__c</field>
+        <value xsi:type="xsd:string">gist</value>
+    </values>
+    <values>
+        <field>State__c</field>
+        <value xsi:type="xsd:string">state</value>
+    </values>
+    <values>
+        <field>UserName__c</field>
+        <value xsi:type="xsd:string">MonsePedroza28</value>
+    </values>
+    <values>
+        <field>VersionController__c</field>
+        <value xsi:type="xsd:string">/repos</value>
+    </values>
+</CustomMetadata>

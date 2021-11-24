@@ -1,0 +1,44 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0055e000005yQAGAA2",
+      "createdByName": "Hi Arcode",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/In_App_Checklist_Settings__c-en_US.objectTranslation",
+      "fullName": "In_App_Checklist_Settings__c-en_US",
+      "id": "",
+      "lastModifiedById": "0055e000005yQAGAA2",
+      "lastModifiedByName": "Hi Arcode",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0055e000005yQAGAA2",
+      "createdByName": "Hi Arcode",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Contact__mdt-es_MX.objectTranslation",
+      "fullName": "Contact__mdt-es_MX",
+      "id": "",
+      "lastModifiedById": "0055e000005yQAGAA2",
+      "lastModifiedByName": "Hi Arcode",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0055e000005yQAGAA2",
+      "createdByName": "Hi Arcode",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Client_c__mdt-es_MX.objectTranslation",
+      "fullName": "Client_c__mdt-es_MX",
+      "id": "",
+      "lastModifiedById": "0055e000005yQAGAA2",
+      "lastModifiedByName": "Hi Arcode",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    }
+  ]
+}

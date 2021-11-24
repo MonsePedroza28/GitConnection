@@ -1,0 +1,20 @@
+<apex:page controller="gitHubConnectionController">
+    <apex:form >
+    <apex:actionFunction name="getAuthentication" action="{!getAuthentication}" reRender="container"/>
+    <script>
+        function gitConnection() {
+            getAuthentication();
+        }
+
+    </script>
+    <apex:outputPanel id="container">
+        <script>
+           var strUrl = '{!strUrl}';
+            if(strUrl !== null && strUrl !== "") {
+                window.open(strUrl);
+            }
+        </script>
+    </apex:outputPanel>
+        <button type="button" onclick="gitConnection()">Authentication</button>
+    </apex:form>
+</apex:page>

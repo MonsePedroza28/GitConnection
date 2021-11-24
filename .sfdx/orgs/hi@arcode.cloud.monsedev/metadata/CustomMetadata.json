@@ -1,0 +1,16 @@
+{
+  "status": 0,
+  "result": {
+    "createdById": "0055e000005yQAGAA2",
+    "createdByName": "Hi Arcode",
+    "createdDate": "1970-01-01T00:00:00.000Z",
+    "fileName": "customMetadata/IntegrationApp.authenticationUrl.md",
+    "fullName": "IntegrationApp.authenticationUrl",
+    "id": "m008G000000GnTnQAK",
+    "lastModifiedById": "0055e000005yQAGAA2",
+    "lastModifiedByName": "Hi Arcode",
+    "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+    "manageableState": "unmanaged",
+    "type": "CustomMetadata"
+  }
+}

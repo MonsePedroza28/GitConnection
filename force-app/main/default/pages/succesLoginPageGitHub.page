@@ -1,0 +1,22 @@
+<apex:page controller="gitHubConnectionController" action="{!getToken}" name="onLoad">
+    
+    <apex:form >
+        <script>
+            function onLoad(loading, loaded) {
+                loading();
+                if (window.addEventListener) {
+                    window.addEventListener('load', loaded, false);
+                    window.close();
+                }
+            };
+            onLoad(function(){
+            });
+        </script>
+        <apex:commandButton value="api" action="{!getRepositories}"/>
+        <apex:commandButton value="Branch" action="{!getBranches}"/>
+        <apex:outputPanel id="container">
+        <script>
+        </script>
+    </apex:outputPanel>
+    </apex:form>
+</apex:page>
