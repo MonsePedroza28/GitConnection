@@ -159,7 +159,7 @@ global with sharing class gitHubConnectionController {
                                 when 'CreatePull' {
                                     objRequest.setBody(payload);
                                     objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
-                                    objRequest.setHeader('Authorization','token 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');
+                                    objRequest.setHeader('Authorization','token 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');
                                     objRequest.setHeader('Content-Type', 'application/json');
                                     objRequest.setmethod(strMethod);
                                 }
