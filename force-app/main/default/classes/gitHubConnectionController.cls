@@ -81,7 +81,7 @@ global with sharing class gitHubConnectionController {
     /**
      * This method obtains the branches from the GitHub user.
      * @return get the list of branches.
-     * Monse
+     * Monse create pull request.
      */
     @AuraEnabled(cacheable = false)
     public static List<Object> getBranches() {
@@ -154,6 +154,15 @@ global with sharing class gitHubConnectionController {
                     objRequest.setHeader(strAuthorization, objUser.Token__c);
                     objRequest.setmethod(strMethod);
                 }
+
+                                //We prepared user's repositories.
+                                when 'CreatePull' {
+                                    objRequest.setBody(payload);
+                                    objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
+                                    objRequest.setHeader('Authorization','token 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');
+                                    objRequest.setHeader('Content-Type', 'application/json');
+                                    objRequest.setmethod(strMethod);
+                                }
             }
         }
         return objRequest;
