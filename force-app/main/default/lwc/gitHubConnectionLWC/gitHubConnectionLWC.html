@@ -6,36 +6,50 @@
  */
 -->
 <template>
-    <lightning-card title="Connect with GitHub" icon-name="custom:custom63">
-        <div class="slds-m-around_medium">
-          <template if:true={boolAuthetication}>
-            <p class="slds-m-bottom_small slds-align_absolute-center">
-              <lightning-button label="Connect" onclick={handleGetAuthentication}></lightning-button>
-            </p>
-          </template>
-          <template if:true={boolButtons}>
-            <p class="slds-m-bottom_small slds-align_absolute-center">
-              <lightning-button label="View repositories" onclick={handleGetRepositories}></lightning-button>
-            </p>
-            <p class="slds-m-bottom_small slds-align_absolute-center">
-              <lightning-button label="View Branches" onclick={handleGetBranches}></lightning-button>
-            </p>
-            <p class="slds-m-bottom_small slds-align_absolute-center">
-              <lightning-button label="View Branches" onclick={getStatus}></lightning-button>
-            </p>
-          </template>
-        </div>
-        <template if:true={boolRepositories}>
-        <div class="slds-float_left" >
-            <lightning-datatable data={boolRepositories} columns={objColumnsRepositories} key-field="Id" name-field="Name" hide-checkbox-column="true">
-            </lightning-datatable>
-        </div>
-      </template>
-      <template if:true={boolBranches}>
-        <div class="slds-float_left" >
-            <lightning-datatable data={boolBranches} columns ={objColumnsBranches} key-field="Name" name-field="Name" hide-checkbox-column="true">
-            </lightning-datatable>
-        </div>
-      </template>
-    </lightning-card>
+  <lightning-card title="Connect with GitHub" icon-name="custom:custom63">
+      <div class="slds-m-around_medium">
+        <template if:true={boolAuthetication}>
+          <p class="slds-m-bottom_small slds-align_absolute-center">
+            <lightning-button label="Connect" onclick={handleGetAuthentication}></lightning-button>
+          </p>
+        </template>
+        <template if:true={boolButtons}>
+          <h1 class="slds-align_absolute-center" title="Views">
+            <a>Views</a>
+          </h1> 
+          <div class="slds-col">&nbsp;</div>
+          <p class="slds-m-bottom_small slds-align_absolute-center">
+            <lightning-button label="Repositories" onclick={handleGetRepositories}></lightning-button>
+            <lightning-button label="Branches" onclick={handleGetBranches}></lightning-button>
+            <lightning-button label="Pull Request" onclick={handleGetPulls}></lightning-button>
+          </p>
+          <h1 class="slds-align_absolute-center" title="Views">
+            <a>Create</a>
+          </h1> 
+          <div class="slds-col">&nbsp;</div>
+          <p class="slds-m-bottom_small slds-align_absolute-center">
+            <lightning-button label="Pull Request" onclick={handleCreatePulls}></lightning-button>
+            <lightning-button label="Commit" onclick={handleCreateCommit}></lightning-button>
+          </p>
+        </template>
+      </div>
+      <template if:true={boolRepositories}>
+      <div class="slds-float_left" >
+          <lightning-datatable data={boolRepositories} columns={objColumnsRepositories} key-field="Id" name-field="Name" hide-checkbox-column="true">
+          </lightning-datatable>
+      </div>
+    </template>
+    <template if:true={boolBranches}>
+      <div class="slds-float_left" >
+          <lightning-datatable data={boolBranches} columns ={objColumnsBranches} key-field="Name" name-field="Name" hide-checkbox-column="true">
+          </lightning-datatable>
+      </div>
+    </template>
+    <template if:true={boolPulls}>
+      <div class="slds-float_left" >
+          <lightning-datatable data={boolPulls} columns ={objColumnsPulls} key-field="Id" name-field="Title" hide-checkbox-column="true">
+          </lightning-datatable>
+      </div>
+    </template>
+  </lightning-card>
 </template>
