@@ -30,6 +30,7 @@ global with sharing class gitHubConnectionController {
         strClientId = objIntegrateApp.ClientId__c;
         strUrl = strAuthorizationUrl + '?scope=' + strScope + '&client_id=' + strClientId + '&redirect_uri=' + strRedirectUri + '&state=' + strState;
         return strUrl;
+        
     }
 
     /**
@@ -108,6 +109,87 @@ global with sharing class gitHubConnectionController {
     }
 
     /**
+     * This method connects with GitHub and obtains repositories.
+     * @return get the list of repositories.
+     */
+    @AuraEnabled(cacheable = false)
+    public static List<Object> getRepositories() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+
+        //We prepare user's repositories.
+        strResults = getHttpResponse(getHttpRequest('Repository', 'GET', 'Authorization', '', '', 'MonsePedroza28', 'https://api.github.com/users/', '/repos', '', '', '', '', ''));
+
+        //We obtain user's repositories.
+        List<Object> lstRepositories = (List<Object>)JSON.deserializeUntyped(strResults);
+        return lstRepositories;
+    }   
+
+    /**
+     * This method obtains the branches from the GitHub user.
+     * @return get the list of branches.
+     */
+    @AuraEnabled(cacheable = false)
+    public static List<Object> getBranches() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+       
+        //We prepare user's branches.
+        strResults = getHttpResponse(getHttpRequest('Branch', 'GET', 'Authorization', '', '/GitConnection', 'MonsePedroza28', 'https://api.github.com/repos/', '/git', '', '', '', '', ''));
+
+        List<Object> lstBranches = (List<Object>)JSON.deserializeUntyped(strResults);
+        System.debug(LoggingLevel.INFO, lstBranches);
+        return lstBranches;
+    }
+
+    /**
+     * This method obtains the branches from the GitHub user.
+     * @return get the list of branches.
+     */
+    @AuraEnabled(cacheable = false)
+    public static void getFiles() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+       
+        //We prepare user's branches.
+        strResults = getHttpResponse(getHttpRequest('ObtainFile', 'PUT', 'Authorization', '', '/GitConnection', 'MonsePedroza28', 'https://api.github.com/repos/', '/contents/notes', '', '', '', '', ''));
+
+    }
+
+        /**
+     * This method obtains the branches from the GitHub user.
+     * @return get the list of branches.
+     */
+    @AuraEnabled(cacheable = false)
+    public static List<Object> createPull() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+       
+        //We prepare user's branches.
+        strResults = getHttpResponse(getHttpRequest('CreatePull', 'POST', '', '', '/GitConnection', 'MonsePedroza28', 'https://api.github.com/repos/', '/git/blobs', '', '', '', '', ''));
+        List<Object> lstBranches = (List<Object>)JSON.deserializeUntyped(strResults);
+        System.debug(LoggingLevel.INFO, lstBranches);
+        return lstBranches;
+    }
+
+
+    /**
+     * This method obtains the branches from the GitHub user.
+     * @return get the list of branches.
+     */
+    @AuraEnabled(cacheable = false)
+    public static List<Object> createCommits() {
+        User objUser = [SELECT Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        String strResults;
+       
+        //We prepare user's branches.
+        strResults = getHttpResponse(getHttpRequest('CreateCommit', 'POST', '', '', '/GitConnection', 'MonsePedroza28', 'https://api.github.com/repos/', '/git/commits', '', '', '', '', ''));
+        List<Object> lstBranches = (List<Object>)JSON.deserializeUntyped(strResults);
+        System.debug(LoggingLevel.INFO, lstBranches);
+        return lstBranches;
+    }
+
+    /**
      * This method prepares HttpsRequest for differents Version Controllers.
      * @param strType Type of Version Controller.
      * @param strMethod Method to execute.
@@ -178,6 +260,115 @@ global with sharing class gitHubConnectionController {
         HTTPResponse objResponse = objHttp.send(objRequest);
         strResults = objResponse.getBody();
         return strResults;
+    }
+    /**
+     * This method prepares HttpsRequest for differents Version Controllers.
+     * @param strType Type of Version Controller.
+     * @param strMethod Method to execute.
+     * @param strAuthorization Authorization of htppRequest.
+     * @param strApplication 
+     * @param strRepositoryName Name of repository.
+     * @param strUserName User's name.
+     * @param strRequest API link.
+     * @param strVersionController Type of Version Controller.
+     * @param strClientId User's Id
+     * @param strClientSecret Id Client Secret
+     * @param strCode Code generate for GitHub
+     * @param strRedirectUri Redirect link.
+     * @param strState Security word.
+     */
+    public static HttpRequest getHttpRequest(String strType, String strMethod, String strAuthorization, String strApplication, String strRepositoryName, String strUserName, 
+    String strRequest, String strVersionController, String strClientId, String strClientSecret, String strCode, String strRedirectUri, String strState){
+
+        //We get Access Token of user.
+        User objUser = [SELECT Id, Token__c FROM User WHERE Id = :UserInfo.getUserId()];
+        HttpRequest objRequest = new HttpRequest();
+        String payload = JSON.serialize(new Map<String,Object>{
+            'title' => 'Test2 Pull',
+            'body' => 'Please pull this in!',
+            'head' => 'Test3',
+            'base' => 'master'
+        });
+        System.debug(payload);
+        System.debug('Map');
+
+        String payload2 = JSON.serialize(new Map<String,Object>{
+            'message' => 'my commit message',
+            'tree'=> '13044c65969013aa3d9eedea027d9734be0020e7'
+        });
+        System.debug(payload2);
+        System.debug('Map2');
+
+        String payload3 = JSON.serialize(new Map<String,Object>{
+            'content' => 'Content of the blob',
+            'encoding' => 'utf-8'
+        });
+        System.debug(payload3);
+        System.debug('Map3');
+
+        Blob value = Blob.valueOf('Holaaaa');
+        String content = EncodingUtil.base64Encode(value);
+
+        String payload4 = JSON.serialize(new Map<String,Object>{
+            'message' => 'Ready',
+            'content' => content,
+            'name' => 'notes',
+            'sha' => 'e38d7f6166c0658c5019b23a0f05a057b5fe7eb4',
+            'branch' => 'master'
+        });
+
+        if(strType != null && strType != 'undefined' && strType != ''){
+            switch on strType{
+
+                //We prepared access token from user.
+                when 'Token' {
+                    objRequest.setBody('client_id=' + strClientId + '&client_secret=' + strClientSecret + '&code=' + strCode + '&redirect_uri=' + strRedirectUri + '&state=' + strState);
+                    objRequest.setCompressed(false);
+                    objRequest.setHeader(strAuthorization, strApplication);
+                    objRequest.setEndpoint(strRequest);
+                    objRequest.setMethod(strMethod);
+                }
+
+                //We prepared user's branch.
+                when 'Branch' {
+                    objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
+                    objRequest.setHeader(strAuthorization, objUser.Token__c);
+                    objRequest.setmethod(strMethod);
+                }
+
+                //We prepared user's repositories.
+                when 'Repository' {
+                    objRequest.setEndpoint(strRequest + strUserName + strVersionController);
+                    objRequest.setHeader(strAuthorization, objUser.Token__c);
+                    objRequest.setmethod(strMethod);
+                }
+
+                //We prepared user's repositories.
+                when 'CreatePull' {
+                    objRequest.setBody(payload3);
+                    objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
+                    objRequest.setHeader('Authorization','token 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');
+                    objRequest.setmethod(strMethod);
+                }
+
+                //We prepared user's repositories.
+                when 'CreateCommit' {
+                    objRequest.setBody(payload2);
+                    objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
+                    objRequest.setHeader('Authorization','token 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');
+                    objRequest.setmethod(strMethod);
+                }
+
+                //We prepared user's repositories.
+                when 'ObtainFile' {
+                    objRequest.setBody(payload4);
+                    objRequest.setEndpoint(strRequest + strUserName + strRepositoryName + strVersionController);
+                    objRequest.setHeader('Authorization','token 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');
+                    objRequest.setmethod(strMethod);
+                }
+            }
+        }
+        return objRequest;
     }
 
 
