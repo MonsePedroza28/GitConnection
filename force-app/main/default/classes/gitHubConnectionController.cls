@@ -30,6 +30,7 @@ global with sharing class gitHubConnectionController {
         strClientId = objIntegrateApp.ClientId__c;
         strUrl = strAuthorizationUrl + '?scope=' + strScope + '&client_id=' + strClientId + '&redirect_uri=' + strRedirectUri + '&state=' + strState;
         return strUrl;
+        
     }
 
     /**
